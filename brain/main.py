@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 import logging
 
 from app.logging_config import setup_logging
+from app.routers import stress_triage
 
 setup_logging()
 logger = logging.getLogger(__name__)
@@ -16,6 +17,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Circadia Brain", lifespan=lifespan)
+
+app.include_router(stress_triage.router)
 
 
 @app.get("/health")
