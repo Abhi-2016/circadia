@@ -18,4 +18,14 @@ See PLAN.md for the full agent map and daily loop.
 ## Key Decisions Made
 - App name: Circadia
 - Platform: Mobile first (iOS), desktop on roadmap
-- Agent architecture: 3-phase daily loop with 11 agents and one orchestrator
+- Agent architecture: Orchestrator + subagent pattern. One orchestrator owns all user conversation and decides which subagents to invoke. Subagents are specialised units (Stress Triage, Protocol Selection, Wind-Down Delivery, etc.) exposed to the orchestrator as callable tools — never a hardcoded linear pipeline.
+- Stateless backend: mobile sends full conversation history on every API call; no server-side session state
+
+## Build Status
+| Subagent | Status |
+|---|---|
+| Stress Triage | ✅ Complete |
+| Protocol Selection | 🔜 Next |
+| Wind-Down Delivery | 🔜 Pending |
+| All others | 🔜 Pending |
+| Orchestrator | 🔜 Pending (builds after evening subagents complete) |

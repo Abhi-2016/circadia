@@ -18,29 +18,37 @@ Circadia is an agentic AI sleep app for mobile (iOS first), powered by a multi-a
 
 ## Architecture — Agentic Sleep OS
 
-Three phases, one orchestrator:
+One orchestrator, three phases, ten subagents.
 
-### Agents
-| Agent | Phase | Responsibility |
+The **Orchestrator** owns every conversation with the user. It decides which subagents to invoke, when, and in what order — based on context, not a hardcoded pipeline. Subagents are specialised units exposed to the orchestrator as callable tools; they never talk to the user directly.
+
+### Orchestrator
+| Agent | Scope | Responsibility |
 |---|---|---|
-| Orchestrator | All | Routes tasks across agents, manages the daily loop |
-| Reflection Agent | Morning | Analyzes last night's sleep data |
-| Correlation Agent | Morning | Identifies environment/behaviour factors affecting sleep |
-| Planning Agent | Daytime | Builds updated sleep plan |
-| Research Agent | Daytime | Pulls CBT-I and evidence-based interventions |
-| Coaching Agent | Daytime | Personalises the plan for the user |
-| Stress Triage Agent | Evening | Assesses current stress/state via journaling prompt |
-| Protocol Selection Agent | Evening | Picks the right wind-down intervention |
-| Wind-Down Delivery Agent | Evening | Guides user through the chosen protocol |
-| Sensor/Environment Agent | Night | Monitors sleep environment inputs |
-| Action Agent | Night | Outputs nudges or smart home automations |
+| Orchestrator | All phases | Owns all user conversation. Decides which subagents to invoke and when. Closes the daily loop. |
+
+### Subagents
+| Subagent | Phase | Responsibility |
+|---|---|---|
+| Stress Triage | Evening | Classifies user's stress type and severity from conversation context |
+| Protocol Selection | Evening | Selects the right wind-down intervention given stress type and severity |
+| Wind-Down Delivery | Evening | Guides user through the chosen protocol |
+| Reflection | Morning | Analyses last night's sleep data |
+| Correlation | Morning | Identifies environment/behaviour factors affecting sleep |
+| Planning | Daytime | Builds updated sleep plan |
+| Research | Daytime | Pulls CBT-I and evidence-based interventions |
+| Coaching | Daytime | Personalises the plan for the user |
+| Sensor/Environment | Night | Monitors sleep environment inputs |
+| Action | Night | Outputs nudges or smart home automations |
 
 ### Daily Loop
-1. **Morning** — Reflection + Correlation agents analyse last night
-2. **Daytime** — Planning + Research + Coaching agents update the sleep plan
-3. **Evening** — Stress Triage → Protocol Selection → Wind-Down Delivery
-4. **Night** — Environment monitoring and nudges
-5. **Repeat** — Orchestrator closes the loop
+The orchestrator drives the loop — flow is adaptive, not linear.
+
+1. **Morning** — Orchestrator invokes Reflection + Correlation subagents to analyse last night
+2. **Daytime** — Orchestrator invokes Planning + Research + Coaching subagents to update the sleep plan
+3. **Evening** — Orchestrator converses with user; invokes Stress Triage → Protocol Selection → Wind-Down Delivery subagents as needed
+4. **Night** — Orchestrator invokes Sensor/Environment + Action subagents for monitoring and nudges
+5. **Repeat** — Orchestrator closes the loop and seeds the next morning
 
 ---
 
@@ -64,3 +72,5 @@ Three phases, one orchestrator:
 | Date | Milestone |
 |---|---|
 | 2026-04-26 | Project initiated. App named Circadia. Ground rules set. Architecture defined. |
+| 2026-05-10 | Stress Triage subagent built, tested, and merged to main. |
+| 2026-05-10 | Architecture updated: orchestrator + subagent pattern adopted. Subagents are invoked by the orchestrator as callable tools — not a linear pipeline. |
