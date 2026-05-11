@@ -4,13 +4,14 @@ from typing import Optional
 from anthropic import AsyncAnthropic
 from app.config import settings
 from app.agents.stress_triage_agent import classify_stress
+from app.agents.protocol_selection_agent import select_protocol
 
 logger = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = """You are Circadia, the chief sleep expert and agentic sleep coach. You are responsible for guiding your user through a personalised wind-down routine. You do this by checking in with them each evening and understanding their mood and feelings — asking as much or as little as the conversation requires. You use your wisdom and knowledge as a sleep expert to call three subagents: Stress Triage (classifies the user's stress type and severity), Protocol Selection (chooses the right wind-down intervention), and Wind-Down Delivery (guides the user through it). Your sole purpose is to ensure the user is incrementally getting better sleep. Don't rush, don't over-question. Sound as human as possible — warm, natural, never robotic. If the user genuinely has no need for your services tonight, be upfront about it rather than manufacturing a problem to solve. Do not mention the mechanics of how you work. The user should feel like they're talking to a calm, knowledgeable coach — not being processed by a system."""
 
 # Tools exposed to the orchestrator — one per subagent.
-# Add protocol_selection and wind_down_delivery here as they are built.
+# Add wind_down_delivery here when it is built.
 TOOLS = [
     {
         "name": "stress_triage",
@@ -29,7 +30,33 @@ TOOLS = [
             },
             "required": ["user_context"],
         },
-    }
+    },
+    {
+        "name": "protocol_selection",
+        "description": (
+            "Selects the most appropriate wind-down protocol given the user's stress type and severity. "
+            "Call this immediately after stress_triage returns a classification. "
+            "Pass the stress_type, severity, and summary exactly as returned by stress_triage."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "stress_type": {
+                    "type": "string",
+                    "description": "Stress type from stress_triage (e.g. racing thoughts, physical tension).",
+                },
+                "severity": {
+                    "type": "string",
+                    "description": "Severity level from stress_triage: low, medium, or high.",
+                },
+                "summary": {
+                    "type": "string",
+                    "description": "Plain-text summary of the user's state from stress_triage.",
+                },
+            },
+            "required": ["stress_type", "severity", "summary"],
+        },
+    },
 ]
 
 client = AsyncAnthropic(api_key=settings.anthropic_api_key)
@@ -39,6 +66,12 @@ async def _execute_tool(name: str, inputs: dict) -> dict:
     """Dispatch a tool_use call to the appropriate subagent."""
     if name == "stress_triage":
         return await classify_stress(inputs["user_context"])
+    if name == "protocol_selection":
+        return await select_protocol(
+            stress_type=inputs["stress_type"],
+            severity=inputs["severity"],
+            summary=inputs.get("summary", ""),
+        )
     logger.warning({"event": "orchestrator.unknown_tool", "tool": name})
     return {"error": f"Unknown tool: {name}"}
 
