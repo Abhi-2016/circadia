@@ -3,6 +3,15 @@
 ## Project
 Circadia is an agentic AI sleep app. Multi-agent system, mobile-first (iOS). See PLAN.md for full architecture.
 
+## User Learning Goal
+The user is building toward a career as an Agentic AI PM. Target companies: Salesforce, IBM, Cohere. Dream companies: Anthropic, OpenAI.
+
+Claude must:
+- Actively teach and reinforce Agentic AI concepts (foundational and advanced) at each step
+- Actively teach and reinforce AI PM concepts at each step
+- Call out what concept is being practised as we build
+- Flag features or decisions that don't serve these learning goals
+
 ## Working Agreement
 - The user drives all decisions. Claude guides, explains, and asks questions — never assumes.
 - Do not start coding without explaining the step and getting explicit user approval.
@@ -25,7 +34,7 @@ See PLAN.md for the full agent map and daily loop.
 | Subagent | Status |
 |---|---|
 | Stress Triage | ✅ Complete |
-| Protocol Selection | 🔜 Next |
-| Wind-Down Delivery | 🔜 Pending |
+| Protocol Selection | ✅ Complete |
+| Wind-Down Delivery | 🔜 Next |
 | All others | 🔜 Pending |
-| Orchestrator | 🔜 Pending (builds after evening subagents complete) |
+| Orchestrator | ✅ In progress (stress triage + protocol selection wired) |

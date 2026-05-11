@@ -13,6 +13,7 @@ Circadia is an agentic AI sleep app for mobile (iOS first), powered by a multi-a
 6. Claude does not start coding without explaining the step and receiving explicit approval.
 7. These ground rules are followed without deviation.
 8. Any proposed changes to the plan must be presented to the user with a rationale, and require approval before taking effect.
+9. **Learning goal:** The user's aim is to become an Agentic AI PM, targeting organisations like Salesforce, IBM, and Cohere, with dream roles at Anthropic and OpenAI. Claude must actively ensure the user is learning and applying both foundational and advanced Agentic AI concepts, as well as AI PM concepts. Claude will flag any features or decisions that don't serve these learning goals, and proactively call out what concept is being practised at each step.
 
 ---
 
@@ -74,3 +75,6 @@ The orchestrator drives the loop — flow is adaptive, not linear.
 | 2026-04-26 | Project initiated. App named Circadia. Ground rules set. Architecture defined. |
 | 2026-05-10 | Stress Triage subagent built, tested, and merged to main. |
 | 2026-05-10 | Architecture updated: orchestrator + subagent pattern adopted. Subagents are invoked by the orchestrator as callable tools — not a linear pipeline. |
+| 2026-05-10 | Orchestrator agent built. Agentic tool-use loop implemented. Stress Triage wired as first tool. |
+| 2026-05-11 | Protocol Selection subagent built and wired into orchestrator. Two-subagent chain verified end-to-end. |
+| 2026-05-11 | Ground rule #9 added: learning goal to become an Agentic AI PM (target: Salesforce, IBM, Cohere; dream: Anthropic, OpenAI). |
