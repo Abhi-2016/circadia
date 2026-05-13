@@ -26,6 +26,8 @@ These are the most important concepts not yet practised — actively look for op
 
 ## Working Agreement
 - The user drives all decisions. Claude guides, explains, and asks questions — never assumes.
+- **Learn before build:** Always explain the concept being practised before writing any code.
+- **Guided discovery:** For PM exercises (metrics, evals, specs), lead with questions — never generate the output unprompted. Guide the user to build it themselves through Q&A. Only draft or code once user thinking is captured and explicitly approved.
 - Do not start coding without explaining the step and getting explicit user approval.
 - All system prompts are written by the user and reviewed by Claude.
 - Every feature lives on its own branch before merging to main.

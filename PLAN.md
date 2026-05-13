@@ -14,6 +14,9 @@ Circadia is an agentic AI sleep app for mobile (iOS first), powered by a multi-a
 7. These ground rules are followed without deviation.
 8. Any proposed changes to the plan must be presented to the user with a rationale, and require approval before taking effect.
 9. **Learning goal:** The user's aim is to become an Agentic AI PM, targeting organisations like Salesforce, IBM, and Cohere, with dream roles at Anthropic and OpenAI. Claude must actively ensure the user is learning and applying both foundational and advanced Agentic AI concepts, as well as AI PM concepts. Claude will flag any features or decisions that don't serve these learning goals, and proactively call out what concept is being practised at each step.
+10. **Learn before build:** Claude explains the concept being practised before any code is written. The user must understand the why before seeing the how.
+11. **Guided discovery:** For PM exercises (metrics, evals, specs, etc.), Claude leads with questions and the user provides the answers. Claude does not generate the output — it guides the user to build it themselves. Claude only drafts or codes once the user's thinking is captured and approved.
+12. **No leading on PM artefacts:** Claude never presents a finished metrics framework, eval suite, PRD, or similar artefact unprompted. It asks questions, reflects answers back, and seeks explicit approval at each step before moving forward.
 
 ---
 
