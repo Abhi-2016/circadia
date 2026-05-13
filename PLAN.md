@@ -59,6 +59,48 @@ The orchestrator drives the loop — flow is adaptive, not linear.
 
 ---
 
+## AI PM Learning Tracker
+
+Circadia is built as a learning project for an Agentic AI PM career. This tracker records which concepts have been practised, which are in progress, and which are gaps to close.
+
+### Agentic AI Concepts
+
+| Concept | Status | Where practised |
+|---|---|---|
+| Orchestrator + subagent architecture | ✅ Done | orchestrator_agent.py — owns conversation, delegates via tool_use |
+| Tool use loop (tool_use / tool_result) | ✅ Done | Orchestrator agentic loop |
+| Subagent as pure function | ✅ Done | Stress Triage + Protocol Selection refactored as classifiers |
+| Stateless API design | ✅ Done | Full history sent on every call — no server-side session |
+| System prompt design & ownership | ✅ Done | User writes all prompts; Claude reviews |
+| Multi-subagent chaining | ✅ Done | stress_triage → protocol_selection in sequence |
+| Session completion signalling | 🔜 Next | `complete` flag — wire up when Wind-Down Delivery is built |
+| Memory & persistence across sessions | ❌ Not started | How does Circadia remember you night over night? |
+| Parallel tool calls | ❌ Not started | Invoking multiple subagents simultaneously |
+| Agent self-reflection / meta-cognition | ❌ Not started | Orchestrator evaluating its own output quality |
+| Human-in-the-loop patterns | ❌ Not started | When should the agent pause and ask for confirmation? |
+| Streaming responses | ❌ Not started | Real-time token streaming to mobile client |
+
+### AI PM Concepts
+
+| Concept | Status | Where practised |
+|---|---|---|
+| System design for AI products | ✅ Done | Architecture decisions: orchestrator pattern, stateless design |
+| Prompt engineering as a PM discipline | ✅ Done | User owns and writes every system prompt |
+| Build sequencing & prioritisation | ✅ Done | Evening phase first, orchestrator before UI |
+| API contract design | ✅ Done | Shaped session endpoint request/response schema |
+| Roadmapping | ⚠️ In progress | Exists but lacks prioritisation rationale |
+| Eval strategy | ⚠️ In progress | Defined in plan but nothing built yet — behind schedule |
+| Success metrics | ❌ Not started | What does "Circadia is working" look like? |
+| Safety & responsible AI | ❌ Not started | Crisis handling, harmful advice guardrails, medical disclaimers |
+| Cost & latency tradeoffs | ❌ Not started | Cost per session, model downgrade decisions, latency budgets |
+| Feedback loops | ❌ Not started | How does the product improve from user signal over time? |
+| User research & personas | ❌ Not started | Who is the user? What is their job-to-be-done? |
+| PRD / feature spec writing | ❌ Not started | No formal specs written yet |
+| Responsible AI / guardrails | ❌ Not started | Failure modes, hallucination handling, edge cases |
+| Go-to-market thinking | ❌ Not started | Pricing, positioning, communicating AI capabilities honestly |
+
+---
+
 ## Eval Suite
 | Eval | What it measures |
 |---|---|

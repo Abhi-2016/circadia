@@ -12,6 +12,18 @@ Claude must:
 - Call out what concept is being practised as we build
 - Flag features or decisions that don't serve these learning goals
 
+### Priority gaps to close (from audit)
+These are the most important concepts not yet practised — actively look for opportunities to introduce them:
+
+| Gap | Why it matters |
+|---|---|
+| Success metrics | Table-stakes PM skill — shapes every build decision |
+| Evals (build, not just define) | #1 signal for Anthropic/OpenAI PM roles |
+| Safety & responsible AI | Anthropic's core value; expected in any AI PM interview |
+| Cost & latency tradeoffs | Comes up in every technical AI PM role |
+| Feedback loops | How AI products compound value over time |
+| PRD / spec writing | Demonstrates PM rigour alongside technical depth |
+
 ## Working Agreement
 - The user drives all decisions. Claude guides, explains, and asks questions — never assumes.
 - Do not start coding without explaining the step and getting explicit user approval.

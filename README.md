@@ -18,20 +18,32 @@ Circadia is built on an **orchestrator + subagent architecture**. A single orche
 Subagents handle specific tasks (stress classification, protocol selection, wind-down delivery, sleep analysis, and more) and report back to the orchestrator, which weaves the results into a coherent, natural conversation.
 
 ## Status
-Early development. Evening phase subagents in progress.
+Early development. Evening phase in progress.
 
 | Component | Status |
 |---|---|
+| Orchestrator | ✅ In progress |
 | Stress Triage subagent | ✅ Complete |
-| Protocol Selection subagent | 🔜 In progress |
-| Wind-Down Delivery subagent | 🔜 Pending |
-| Orchestrator | 🔜 Pending |
+| Protocol Selection subagent | ✅ Complete |
+| Wind-Down Delivery subagent | 🔜 Next |
 | Mobile app (iOS) | 🔜 Pending |
 
 ## Roadmap
 - [ ] Evening phase (Stress Triage → Protocol Selection → Wind-Down Delivery)
-- [ ] Orchestrator
+- [ ] Eval suite
 - [ ] Morning + Daytime phases
 - [ ] Mobile app (iOS)
-- [ ] Eval suite
 - [ ] Desktop version
+
+## Built for learning
+
+Circadia is also a portfolio project documenting a learning journey toward an **Agentic AI PM** career. Each component is chosen to practise a specific concept in building, evaluating, and shipping production agentic systems.
+
+| Concept practised | Where |
+|---|---|
+| Orchestrator + subagent architecture | `brain/app/agents/orchestrator_agent.py` |
+| Tool use loop (tool_use / tool_result) | Orchestrator agentic loop |
+| Subagent as pure function | Stress Triage, Protocol Selection |
+| System prompt design & ownership | All agents — PM-owned prompts |
+| Multi-subagent chaining | Stress Triage → Protocol Selection |
+| Stateless API design | `POST /v1/session/chat` |
