@@ -28,6 +28,23 @@ Early development. Evening phase in progress.
 | Wind-Down Delivery subagent | 🔜 Next |
 | Mobile app (iOS) | 🔜 Pending |
 
+## Success Metrics
+
+Circadia measures success at two layers:
+
+**North star — Sleep Improvement Score (1–10)**
+
+| Component | Weight |
+|---|---|
+| Bedtime consistency | 25% |
+| Subjective sleep quality (LLM-as-judge) | 25% |
+| Routine adherence | 25% |
+| App usage | 25% |
+
+Target: users averaging 3/7 consistent sleep nights at onboarding → 5/7 within 3–6 months.
+
+**AI quality signals:** protocol suggestion feedback rate, constraint violation monitoring, out-of-scope guardrail triggers.
+
 ## Roadmap
 - [ ] Evening phase (Stress Triage → Protocol Selection → Wind-Down Delivery)
 - [ ] Eval suite
@@ -47,3 +64,5 @@ Circadia is also a portfolio project documenting a learning journey toward an **
 | System prompt design & ownership | All agents — PM-owned prompts |
 | Multi-subagent chaining | Stress Triage → Protocol Selection |
 | Stateless API design | `POST /v1/session/chat` |
+| Success metrics | North star + AI quality metrics defined from first principles |
+| LLM-as-judge (eval pattern) | Subjective sleep quality scoring via secondary LLM |
