@@ -93,7 +93,7 @@ Circadia is built as a learning project for an Agentic AI PM career. This tracke
 | API contract design | ✅ Done | Shaped session endpoint request/response schema |
 | Roadmapping | ⚠️ In progress | Exists but lacks prioritisation rationale |
 | Eval strategy | ⚠️ In progress | Defined in plan but nothing built yet — behind schedule |
-| Success metrics | ❌ Not started | What does "Circadia is working" look like? |
+| Success metrics | ✅ Done | Sleep Improvement Score defined — north star + AI quality metrics + data sources |
 | Safety & responsible AI | ❌ Not started | Crisis handling, harmful advice guardrails, medical disclaimers |
 | Cost & latency tradeoffs | ❌ Not started | Cost per session, model downgrade decisions, latency budgets |
 | Feedback loops | ❌ Not started | How does the product improve from user signal over time? |
@@ -101,6 +101,50 @@ Circadia is built as a learning project for an Agentic AI PM career. This tracke
 | PRD / feature spec writing | ❌ Not started | No formal specs written yet |
 | Responsible AI / guardrails | ❌ Not started | Failure modes, hallucination handling, edge cases |
 | Go-to-market thinking | ❌ Not started | Pricing, positioning, communicating AI capabilities honestly |
+
+---
+
+## Success Metrics
+
+### North Star Metric — Sleep Improvement Score (1–10)
+
+A composite score measuring whether Circadia is genuinely improving a user's sleep. Equal weighting across four components (to be rebalanced as correlation data emerges).
+
+| Component | Weight | Data source |
+|---|---|---|
+| Bedtime consistency | 25% | Apple Health / wearable integration |
+| Subjective sleep quality | 25% | LLM-as-judge on morning conversations |
+| Routine adherence | 25% | Self-reported log + app session data |
+| App usage | 25% | App session data |
+
+**Score bands:**
+- 1–3: User not engaging fully — AI should surface more personalised suggestions
+- 4–6: Semi-engaged — AI has data but suggestions need refinement
+- 8–10: Power user — app and AI working at full potential
+
+**Growth target:** Users averaging 3/7 consistent sleep days at onboarding → 5/7 days within 3–6 months.
+
+**Known assumption:** Equal weighting is an MVP default. Reweight once correlation data shows which component most predicts sleep improvement.
+
+---
+
+### AI Quality Metrics
+
+Separate from user outcomes — these measure whether Circadia the AI is performing well.
+
+| Signal | What it catches |
+|---|---|
+| "Improve this suggestion" button click rate | Implicit negative feedback — repeated clicks flag poor protocol selection |
+| Protocol constraint violations | AI must only suggest from the 6 approved protocols — any deviation is a failure |
+| Out-of-scope conversation rate | Hard stop triggered when user goes off-topic — frequency monitored as a guardrail signal |
+
+---
+
+### Data Collection Methods
+1. **Self-reported log** — user-entered data (assumes motivated users at MVP stage; revisit for mainstream)
+2. **Health platform integrations** — Apple Watch, Fitbit, Android wearables, Apple Health
+3. **Partner accountability feature** — optional connection to a partner's health data for shared logging
+4. **LLM-as-judge** — secondary LLM evaluates morning conversation transcripts for sleep quality signals
 
 ---
 
@@ -123,3 +167,4 @@ Circadia is built as a learning project for an Agentic AI PM career. This tracke
 | 2026-05-10 | Orchestrator agent built. Agentic tool-use loop implemented. Stress Triage wired as first tool. |
 | 2026-05-11 | Protocol Selection subagent built and wired into orchestrator. Two-subagent chain verified end-to-end. |
 | 2026-05-11 | Ground rule #9 added: learning goal to become an Agentic AI PM (target: Salesforce, IBM, Cohere; dream: Anthropic, OpenAI). |
+| 2026-05-17 | Success metrics defined via guided Q&A. North star: Sleep Improvement Score (1–10). AI quality metrics and data collection methods documented. |

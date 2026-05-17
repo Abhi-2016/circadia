@@ -17,7 +17,7 @@ These are the most important concepts not yet practised — actively look for op
 
 | Gap | Why it matters |
 |---|---|
-| Success metrics | Table-stakes PM skill — shapes every build decision |
+| ~~Success metrics~~ | ~~Table-stakes PM skill — shapes every build decision~~ ✅ Done |
 | Evals (build, not just define) | #1 signal for Anthropic/OpenAI PM roles |
 | Safety & responsible AI | Anthropic's core value; expected in any AI PM interview |
 | Cost & latency tradeoffs | Comes up in every technical AI PM role |
