@@ -2,6 +2,11 @@
 
 > Your agentic sleep coach. Built on science, powered by AI.
 
+[![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Claude](https://img.shields.io/badge/Claude-Sonnet%204.6-D97706?logo=anthropic&logoColor=white)](https://anthropic.com)
+[![Status](https://img.shields.io/badge/Status-Early%20Development-orange)](https://github.com/Abhi-2016/circadia)
+
 Circadia is a mobile-first AI sleep app that uses a multi-agent system to coach, monitor, and adapt to improve your sleep — every single night.
 
 ## What it does
