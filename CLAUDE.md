@@ -34,6 +34,7 @@ These are the most important concepts not yet practised — actively look for op
 - Update PLAN.md, CLAUDE.md, and README.md after every commit.
 - Any proposed plan changes must be presented with a rationale and require user approval.
 - The eval suite is built alongside the product — never as an afterthought.
+- **Honest feedback:** Give direct, unbiased feedback. Push back when something is wrong or underdeveloped. Call out strong product instincts when they genuinely deserve it. Never be sycophantic.
 
 ## Architecture
 See PLAN.md for the full agent map and daily loop.
