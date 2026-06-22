@@ -159,6 +159,19 @@ Separate from user outcomes — these measure whether Circadia the AI is perform
 
 ---
 
+## Design Decisions & Lessons Learned
+
+A record of wrong turns, corrections, and genuine insights made during the build. Kept here as a learning artefact.
+
+| Decision | What happened | Why it was wrong | The right call |
+|---|---|---|---|
+| Web lookup for protocol steps | Proposed fetching CBT-I protocol steps from a live web source at runtime | Adds latency mid-session (user is trying to sleep), unreliable (URLs change, sites go down), unsafe (can't control clinical accuracy of external content), and unnecessary — protocols are stable and short | Hardcode the evidence-based steps directly in the system prompt. Stable, safety-critical content should be owned, not fetched |
+| Subagent waits for user to finish | Assumed Wind-Down Delivery should hold open and only return when the full protocol was complete | HTTP is request/response — a subagent cannot block waiting for user input. The connection would deadlock | Wind-Down Delivery is called once per turn. It reads the conversation history to know where it is in the protocol and generates the next step |
+| Returning full conversation history from subagent | Wind-Down Delivery output included the full conversation history | The orchestrator already holds the full history — sending it back burns tokens with zero benefit | Subagent returns only what's new: `{message, complete, reroute}` |
+| Subagent directly reroutes to another subagent | When the user wanted a new protocol, the subagent would call Stress Triage directly | Subagents have no routing authority — only the orchestrator can invoke subagents | Subagent signals intent upward via `reroute: true`. The orchestrator reads the flag and decides to call Stress Triage again |
+
+---
+
 ## Progress Log
 | Date | Milestone |
 |---|---|
