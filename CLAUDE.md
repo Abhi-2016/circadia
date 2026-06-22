@@ -50,6 +50,6 @@ See PLAN.md for the full agent map and daily loop.
 |---|---|
 | Stress Triage | ✅ Complete |
 | Protocol Selection | ✅ Complete |
-| Wind-Down Delivery | 🔜 Next |
+| Wind-Down Delivery | ✅ Complete |
 | All others | 🔜 Pending |
 | Orchestrator | ✅ In progress (stress triage + protocol selection wired) |

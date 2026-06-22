@@ -37,7 +37,7 @@ The **Orchestrator** owns every conversation with the user. It decides which sub
 |---|---|---|
 | Stress Triage | Evening | Classifies user's stress type and severity from conversation context |
 | Protocol Selection | Evening | Selects the right wind-down intervention given stress type and severity |
-| Wind-Down Delivery | Evening | Guides user through the chosen protocol |
+| Wind-Down Delivery | Evening | Guides user through the chosen protocol ✅ |
 | Reflection | Morning | Analyses last night's sleep data |
 | Correlation | Morning | Identifies environment/behaviour factors affecting sleep |
 | Planning | Daytime | Builds updated sleep plan |
@@ -77,7 +77,7 @@ Circadia is built as a learning project for an Agentic AI PM career. This tracke
 | Stateless API design | ✅ Done | Full history sent on every call — no server-side session |
 | System prompt design & ownership | ✅ Done | User writes all prompts; Claude reviews |
 | Multi-subagent chaining | ✅ Done | stress_triage → protocol_selection in sequence |
-| Session completion signalling | 🔜 Next | `complete` flag — wire up when Wind-Down Delivery is built |
+| Session completion signalling | ✅ Done | `complete` flag wired — set true when wind_down_delivery returns complete=true |
 | Memory & persistence across sessions | ❌ Not started | How does Circadia remember you night over night? |
 | Parallel tool calls | ❌ Not started | Invoking multiple subagents simultaneously |
 | Agent self-reflection / meta-cognition | ❌ Not started | Orchestrator evaluating its own output quality |
@@ -169,3 +169,4 @@ Separate from user outcomes — these measure whether Circadia the AI is perform
 | 2026-05-11 | Protocol Selection subagent built and wired into orchestrator. Two-subagent chain verified end-to-end. |
 | 2026-05-11 | Ground rule #9 added: learning goal to become an Agentic AI PM (target: Salesforce, IBM, Cohere; dream: Anthropic, OpenAI). |
 | 2026-05-17 | Success metrics defined via guided Q&A. North star: Sleep Improvement Score (1–10). AI quality metrics and data collection methods documented. |
+| 2026-05-17 | Wind-Down Delivery subagent built and wired into orchestrator. Evening phase complete: Stress Triage → Protocol Selection → Wind-Down Delivery. complete and reroute flags implemented. |

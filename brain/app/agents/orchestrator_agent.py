@@ -1,17 +1,15 @@
 import json
 import logging
-from typing import Optional
 from anthropic import AsyncAnthropic
 from app.config import settings
 from app.agents.stress_triage_agent import classify_stress
 from app.agents.protocol_selection_agent import select_protocol
+from app.agents.wind_down_delivery_agent import deliver_wind_down
 
 logger = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = """You are Circadia, the chief sleep expert and agentic sleep coach. You are responsible for guiding your user through a personalised wind-down routine. You do this by checking in with them each evening and understanding their mood and feelings — asking as much or as little as the conversation requires. You use your wisdom and knowledge as a sleep expert to call three subagents: Stress Triage (classifies the user's stress type and severity), Protocol Selection (chooses the right wind-down intervention), and Wind-Down Delivery (guides the user through it). Your sole purpose is to ensure the user is incrementally getting better sleep. Don't rush, don't over-question. Sound as human as possible — warm, natural, never robotic. If the user genuinely has no need for your services tonight, be upfront about it rather than manufacturing a problem to solve. Do not mention the mechanics of how you work. The user should feel like they're talking to a calm, knowledgeable coach — not being processed by a system."""
 
-# Tools exposed to the orchestrator — one per subagent.
-# Add wind_down_delivery here when it is built.
 TOOLS = [
     {
         "name": "stress_triage",
@@ -57,12 +55,31 @@ TOOLS = [
             "required": ["stress_type", "severity", "summary"],
         },
     },
+    {
+        "name": "wind_down_delivery",
+        "description": (
+            "Guides the user through the selected wind-down protocol step by step. "
+            "Call this after protocol_selection returns a result, and on every subsequent user turn "
+            "until the returned complete flag is true. "
+            "If reroute is true in the response, call stress_triage again to select a new protocol."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "protocol": {
+                    "type": "string",
+                    "description": "The wind-down protocol to deliver, exactly as returned by protocol_selection.",
+                }
+            },
+            "required": ["protocol"],
+        },
+    },
 ]
 
 client = AsyncAnthropic(api_key=settings.anthropic_api_key)
 
 
-async def _execute_tool(name: str, inputs: dict) -> dict:
+async def _execute_tool(name: str, inputs: dict, context_messages: list) -> dict:
     """Dispatch a tool_use call to the appropriate subagent."""
     if name == "stress_triage":
         return await classify_stress(inputs["user_context"])
@@ -71,6 +88,11 @@ async def _execute_tool(name: str, inputs: dict) -> dict:
             stress_type=inputs["stress_type"],
             severity=inputs["severity"],
             summary=inputs.get("summary", ""),
+        )
+    if name == "wind_down_delivery":
+        return await deliver_wind_down(
+            protocol=inputs["protocol"],
+            messages=context_messages,
         )
     logger.warning({"event": "orchestrator.unknown_tool", "tool": name})
     return {"error": f"Unknown tool: {name}"}
@@ -92,13 +114,14 @@ async def run_session(messages: list[dict]) -> dict:
     Returns:
         {
             "reply": str,               # Text to display to the user
-            "complete": bool,           # True when full session is done (wind-down delivered)
-            "session_data": dict | None # Populated when complete=True
+            "complete": bool,           # True when wind-down is fully delivered
+            "session_data": dict | None # Reserved for future use (morning reflection phase)
         }
     """
     logger.info({"event": "orchestrator.turn", "turn": len(messages)})
 
     loop_messages = [dict(m) for m in messages]
+    session_complete = False
 
     while True:
         response = await client.messages.create(
@@ -121,11 +144,10 @@ async def run_session(messages: list[dict]) -> dict:
             reply_text = next(
                 (b.text for b in response.content if b.type == "text"), ""
             )
-            return {"reply": reply_text, "complete": False, "session_data": None}
+            return {"reply": reply_text, "complete": session_complete, "session_data": None}
 
         # ── Tool use — execute subagent(s) and loop ───────────────────────────
         if response.stop_reason == "tool_use":
-            # Append the full assistant message (may contain text + tool_use blocks)
             loop_messages.append({"role": "assistant", "content": response.content})
 
             tool_results = []
@@ -139,7 +161,12 @@ async def run_session(messages: list[dict]) -> dict:
                     "input": block.input,
                 })
 
-                result = await _execute_tool(block.name, block.input)
+                result = await _execute_tool(block.name, block.input, context_messages=loop_messages)
+
+                # Wind-down complete (no reroute) — mark session done
+                if block.name == "wind_down_delivery":
+                    if result.get("complete") and not result.get("reroute"):
+                        session_complete = True
 
                 tool_results.append({
                     "type": "tool_result",
@@ -148,7 +175,6 @@ async def run_session(messages: list[dict]) -> dict:
                 })
 
             loop_messages.append({"role": "user", "content": tool_results})
-            # Continue the loop — Claude will process results and respond
             continue
 
         # ── Unexpected stop reason ────────────────────────────────────────────

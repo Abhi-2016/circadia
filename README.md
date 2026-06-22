@@ -30,7 +30,7 @@ Early development. Evening phase in progress.
 | Orchestrator | ✅ In progress |
 | Stress Triage subagent | ✅ Complete |
 | Protocol Selection subagent | ✅ Complete |
-| Wind-Down Delivery subagent | 🔜 Next |
+| Wind-Down Delivery subagent | ✅ Complete |
 | Mobile app (iOS) | 🔜 Pending |
 
 ## Success Metrics
@@ -51,7 +51,7 @@ Target: users averaging 3/7 consistent sleep nights at onboarding → 5/7 within
 **AI quality signals:** protocol suggestion feedback rate, constraint violation monitoring, out-of-scope guardrail triggers.
 
 ## Roadmap
-- [ ] Evening phase (Stress Triage → Protocol Selection → Wind-Down Delivery)
+- [x] Evening phase (Stress Triage → Protocol Selection → Wind-Down Delivery)
 - [ ] Eval suite
 - [ ] Morning + Daytime phases
 - [ ] Mobile app (iOS)
