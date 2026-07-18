@@ -52,4 +52,26 @@ See PLAN.md for the full agent map and daily loop.
 | Protocol Selection | ✅ Complete |
 | Wind-Down Delivery | ✅ Complete |
 | All others | 🔜 Pending |
-| Orchestrator | ✅ In progress (stress triage + protocol selection wired) |
+| Orchestrator | ✅ Complete (all three evening subagents wired) |
+
+## Concepts Practised (running log)
+
+### Agentic AI
+- Orchestrator + subagent pattern, tool use loop, subagent as pure function
+- Stateless API design, history as state, session completion signalling
+- Routing authority (orchestrators route; subagents signal intent)
+- Constrained generation / output grounding
+- Multi-subagent chaining
+
+### AI PM
+- Success metrics: north star, three layers, outcome vs engagement distinction
+- LLM-as-judge eval pattern, implicit feedback signals
+- Guardrails as product decisions (not bolted-on safety)
+- Data collection strategy across multiple sources
+- System prompt design & PM ownership of prompts
+
+### Wrong calls corrected
+- Web lookup for stable content → hardcode it
+- Blocking subagent → return per turn, read history to resume
+- Redundant history in output → return only what's new
+- Subagent routing → signal intent upward, let orchestrator route

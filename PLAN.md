@@ -159,16 +159,80 @@ Separate from user outcomes — these measure whether Circadia the AI is perform
 
 ---
 
-## Design Decisions & Lessons Learned
+## Learning Log
 
-A record of wrong turns, corrections, and genuine insights made during the build. Kept here as a learning artefact.
+A running record of concepts practised, instincts validated, and wrong turns corrected. Kept as a portfolio artefact.
+
+### Agentic AI Concepts
+
+**Orchestrator + subagent pattern**
+Proposed replacing the linear pipeline with an orchestrator mid-build — strong instinct. A linear pipeline hardcodes the flow; the orchestrator decides at runtime. This is what makes a system genuinely agentic rather than scripted.
+
+**Tool use loop**
+Claude doesn't call subagents directly — it emits a `tool_use` block, the backend executes the subagent, and returns a `tool_result`. Claude continues with that result in context. The loop runs until `end_turn`.
+
+**Subagent as pure function**
+Stress Triage initially had conversation logic baked in. Refactored into a pure classifier: structured input in, structured JSON out, no conversation, no routing. Keeps subagents testable, replaceable, and simple.
+
+**Stateless API design**
+Mobile app sends the full conversation history on every call; no server-side session state. Tradeoff: payload grows with conversation length, but the server stays simple and scalable. Right call for MVP.
+
+**History as state**
+The key insight for Wind-Down Delivery. The agent doesn't need to hold state between turns — the conversation history is the state. On every call it reads the history and reconstructs exactly where it is in the protocol. Foundational pattern in production agentic systems.
+
+**Routing authority**
+Subagents have no routing authority. Only the orchestrator can invoke subagents. When Wind-Down Delivery needs to reroute, it signals intent via `reroute: true` — the orchestrator reads the flag and calls Stress Triage again. Separation of concerns.
+
+**Session completion signalling**
+The `complete` flag was a placeholder until Wind-Down Delivery was built. Signal chain: Wind-Down Delivery returns `complete: true` → orchestrator sets `session_complete = True` → API response carries `complete: true` to the mobile app.
+
+**Constrained generation**
+Protocol Selection and Wind-Down Delivery are both constrained to 6 known protocols hardcoded in the system prompt. Grounding pattern — constraining outputs to known-good values improves reliability and safety.
+
+---
+
+### AI PM Concepts
+
+**Three layers of AI product metrics**
+Usage (is it being used?) → AI quality (is the AI doing its job?) → real-world impact (is it changing anything?). Most PMs only think about the first layer.
+
+**Outcome vs engagement metrics**
+First draft of the Sleep Improvement Score defined every band by app usage behaviour — not sleep improvement. This is the classic PM trap: measuring engagement instead of outcomes. Corrected by adding outcome-based components to the composite score.
+
+**North star metric design**
+Sleep Improvement Score: four components (bedtime consistency, subjective quality, routine adherence, usage), equal weighting, 1–10 scale, growth target of 3/7 → 5/7 days in 3–6 months. Equal weighting flagged as a known assumption to reweight once correlation data exists.
+
+**LLM-as-judge**
+Independently proposed using a secondary LLM to evaluate morning conversation transcripts for sleep quality signals. This is a production eval pattern used at Anthropic and OpenAI — arrived at without it being named.
+
+**Implicit feedback signals**
+The "improve this suggestion" button as a negative feedback signal. Repeated clicks flag poor protocol selection without requiring users to explicitly rate the experience.
+
+**Guardrails as responsible AI**
+Hard-stopping off-topic conversations and constraining outputs to a fixed protocol list were both made as product decisions — not framed as "safety." This is how responsible AI should work in practice: safety baked in, not bolted on.
+
+**Data collection strategy**
+Four data sources defined independently: self-report log, health platform integrations, partner accountability feature, LLM-as-judge. The partner feature — connecting to a partner's health data — is genuinely novel product thinking.
+
+---
+
+### Wrong Calls (the most useful section)
 
 | Decision | What happened | Why it was wrong | The right call |
 |---|---|---|---|
-| Web lookup for protocol steps | Proposed fetching CBT-I protocol steps from a live web source at runtime | Adds latency mid-session (user is trying to sleep), unreliable (URLs change, sites go down), unsafe (can't control clinical accuracy of external content), and unnecessary — protocols are stable and short | Hardcode the evidence-based steps directly in the system prompt. Stable, safety-critical content should be owned, not fetched |
-| Subagent waits for user to finish | Assumed Wind-Down Delivery should hold open and only return when the full protocol was complete | HTTP is request/response — a subagent cannot block waiting for user input. The connection would deadlock | Wind-Down Delivery is called once per turn. It reads the conversation history to know where it is in the protocol and generates the next step |
-| Returning full conversation history from subagent | Wind-Down Delivery output included the full conversation history | The orchestrator already holds the full history — sending it back burns tokens with zero benefit | Subagent returns only what's new: `{message, complete, reroute}` |
-| Subagent directly reroutes to another subagent | When the user wanted a new protocol, the subagent would call Stress Triage directly | Subagents have no routing authority — only the orchestrator can invoke subagents | Subagent signals intent upward via `reroute: true`. The orchestrator reads the flag and decides to call Stress Triage again |
+| Web lookup for protocol steps | Proposed fetching CBT-I protocol steps from a live web source at runtime | Adds latency mid-session, unreliable (URLs change), unsafe (can't control clinical accuracy), and unnecessary — protocols are stable | Hardcode evidence-based steps in the system prompt. Stable, safety-critical content is owned, not fetched |
+| Blocking subagent | Assumed Wind-Down Delivery should hold open until the full protocol was complete | HTTP is request/response — a subagent cannot block waiting for user input. The connection would deadlock | Wind-Down Delivery is called once per turn. It reads the conversation history to know where it is |
+| Returning full history from subagent | Wind-Down Delivery output included the full conversation history | The orchestrator already holds it — sending it back burns tokens with zero benefit | Subagent returns only what's new: `{message, complete, reroute}` |
+| Subagent reroutes directly | Wind-Down Delivery would call Stress Triage directly when a reroute was needed | Subagents have no routing authority — only the orchestrator can invoke subagents | Subagent signals intent via `reroute: true`. Orchestrator handles the routing |
+
+---
+
+### System Prompt Craft
+
+- Every system prompt was written by the user and reviewed by Claude — correct PM discipline
+- Learned to include "JSON only — no preamble" instruction after seeing Claude wrap outputs in prose
+- Learned to add code-fence stripping in the backend as a defensive measure — Claude sometimes wraps JSON in ` ```json ``` ` blocks regardless of instructions
+- Tone guidance in Wind-Down Delivery (calm, human, simple language, empathy phrases, no jargon) was specific and strong — this level of precision is what separates good prompt engineering from vague instructions
 
 ---
 

@@ -59,15 +59,41 @@ Target: users averaging 3/7 consistent sleep nights at onboarding → 5/7 within
 
 ## Built for learning
 
-Circadia is also a portfolio project documenting a learning journey toward an **Agentic AI PM** career. Each component is chosen to practise a specific concept in building, evaluating, and shipping production agentic systems.
+Circadia is a portfolio project documenting a learning journey toward an **Agentic AI PM** career. Every architectural decision, subagent, and PM artefact is chosen to practise a specific concept in building, evaluating, and shipping production agentic systems.
 
-| Concept practised | Where |
+### Agentic AI concepts
+
+| Concept | Where practised |
 |---|---|
 | Orchestrator + subagent architecture | `brain/app/agents/orchestrator_agent.py` |
 | Tool use loop (tool_use / tool_result) | Orchestrator agentic loop |
 | Subagent as pure function | Stress Triage, Protocol Selection |
-| System prompt design & ownership | All agents — PM-owned prompts |
-| Multi-subagent chaining | Stress Triage → Protocol Selection |
-| Stateless API design | `POST /v1/session/chat` |
-| Success metrics | North star + AI quality metrics defined from first principles |
-| LLM-as-judge (eval pattern) | Subjective sleep quality scoring via secondary LLM |
+| Stateless API design | `POST /v1/session/chat` — full history on every call |
+| History as state | Wind-Down Delivery reads history to know its position in the protocol |
+| Session completion signalling | `complete` + `reroute` flags wired end-to-end |
+| Routing authority | Only the orchestrator routes — subagents signal intent |
+| Constrained generation | Protocol outputs hardcoded to 6 known protocols |
+| Multi-subagent chaining | Stress Triage → Protocol Selection → Wind-Down Delivery |
+| System prompt design & ownership | PM writes every prompt; Claude reviews |
+
+### AI PM concepts
+
+| Concept | Where practised |
+|---|---|
+| Success metrics | Sleep Improvement Score — north star, AI quality signals, data sources |
+| Three layers of metrics | Usage → AI quality → real-world impact |
+| Outcome vs engagement metrics | Corrected early draft that measured app usage instead of sleep outcomes |
+| LLM-as-judge | Subjective sleep quality evaluated by a secondary LLM |
+| Implicit feedback signals | "Improve this suggestion" button as a negative feedback loop |
+| Guardrails as responsible AI | Scope hard-stops and output constraints built as product decisions |
+| Data collection strategy | Self-report, health integrations, partner feature, LLM-as-judge |
+| System design for AI products | Orchestrator pattern, stateless API, subagent contracts |
+
+### Key wrong calls (and corrections)
+
+| Wrong call | Correction |
+|---|---|
+| Fetch protocol steps from web at runtime | Hardcode stable clinical content — never fetch safety-critical data at runtime |
+| Subagent blocks until protocol is complete | HTTP is request/response; agents return per turn and read history to resume |
+| Return full conversation history from subagent | Return only what's new — orchestrator already holds the history |
+| Subagent routes to another subagent directly | Subagents signal intent (`reroute: true`); orchestrator does the routing |
