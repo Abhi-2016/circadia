@@ -39,6 +39,27 @@ These are the most important concepts not yet practised — actively look for op
 ## Architecture
 See PLAN.md for the full agent map and daily loop.
 
+## Architecture Decisions
+
+| Decision Area | Decision | Why |
+|---|---|---|
+| App name | Circadia | Named to reflect circadian rhythm science — positions the product as grounded in sleep biology |
+| Platform | Mobile-first (iOS), desktop on roadmap | Sleep is a mobile-native behaviour — phone is the last thing users interact with before bed |
+| Backend stack | Python + FastAPI + AsyncAnthropic | Async-native for non-blocking LLM calls; FastAPI's Pydantic models enforce request/response contracts cleanly |
+| Agent architecture | Orchestrator + subagent pattern — one orchestrator owns all conversation; subagents are callable tools | Replaced a linear pipeline mid-build. Orchestrator decides at runtime which subagents to invoke and when — making the system genuinely adaptive rather than scripted |
+| Subagent design | Pure functions — structured input in, structured JSON out, no conversation logic, no routing | Keeps subagents testable, replaceable, and simple. All routing authority stays with the orchestrator |
+| Subagent invocation | Claude's native tool_use / tool_result API mechanism | Standard Anthropic agentic loop — Claude decides when to invoke a subagent rather than code hardcoding the call order |
+| API design | Stateless — mobile sends full conversation history on every call; no server-side session state | Simplifies the server significantly; horizontally scalable; standard pattern for mobile AI products |
+| API surface | Single endpoint: `POST /v1/session/chat` | Replaced per-agent endpoints (e.g. `/v1/triage/chat`). One endpoint reflects the orchestrator owning the entire session |
+| Protocol list | Hardcoded to 6 known protocols in the system prompt | Constrained generation — constraining outputs to known-good values improves reliability and prevents hallucinated protocols |
+| Protocol steps | Hardcoded evidence-based steps in Wind-Down Delivery system prompt | Stable, safety-critical clinical content should be owned, not fetched. Web lookup at runtime adds latency, is unreliable, and risks clinical inaccuracy |
+| System prompt ownership | PM writes every system prompt; Claude reviews only | Prompt engineering is a PM discipline — the PM must own the instructions given to the AI, not delegate them |
+| Wind-Down Delivery invocation | Called once per user turn until `complete: true` — not a single blocking call | HTTP is request/response; a subagent cannot hold open a connection waiting for user input. The session would deadlock |
+| State across turns | Conversation history is the state — no separate state store | Wind-Down Delivery reads the history on every call to know where it is in the protocol. Eliminates the need for a session store at the subagent level |
+| Session completion | `complete` and `reroute` boolean flags on Wind-Down Delivery output | `complete: true` signals the session is done. `reroute: true` signals the user wants a new protocol — separates the two exit conditions cleanly |
+| Rerouting | Subagents signal intent via `reroute: true`; orchestrator handles the actual routing | Subagents have no access to the tool registry and cannot invoke other subagents. Routing authority belongs exclusively to the orchestrator |
+| Output schema | Subagents return minimal JSON — only what's new | Early draft returned the full conversation history from Wind-Down Delivery. Rejected: orchestrator already holds it, returning it burns tokens with no benefit |
+
 ## Key Decisions Made
 - App name: Circadia
 - Platform: Mobile first (iOS), desktop on roadmap
